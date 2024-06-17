@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/puux/iptables#readme",
   "dependencies": {
+    "msgpack-lite": "^0.1.26",
     "nodejs-websocket": "^1.7.1"
   }
 }
