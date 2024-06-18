@@ -77,13 +77,26 @@ var server = ws.createServer(function (conn) {
     var raw_data = Buffer.from(data, 'base64');
     var params = msgpack.decode(raw_data);
     if(params.name == "syslog") {
-      log = proc.spawn("tail", ["-f", "/var/log/syslog"]);
-      log.stdout.on('data', function (lines) {
-        var outData = {name: params.name, data: lines.toString().replace(/\r+/g,'').split("\n")};
-        if(log) {
+      try {
+        log = proc.spawn("tail", ["-100f", "/var/log/syslog"]);
+        log.stdout.on('data', function (lines) {
+          var outData = {name: params.name, data: lines.toString().replace(/\r+/g,'').split("\n")};
           conn.sendText(msgpack.encode(outData).toString('base64'));
-        }
-      });
+        });
+        log.stderr.on('data', function (lines) {
+          var outData = {name: params.name, data: lines.toString().replace(/\r+/g,'').split("\n")};
+          conn.sendText(msgpack.encode(outData).toString('base64'));
+        });
+        log.on('error', function(err) {
+          console.log(err);
+          var outData = {name: params.name, data: err.toString().replace(/\r+/g,'').split("\n")};
+          conn.sendText(msgpack.encode(outData).toString('base64'));
+        });
+      } catch(err) {
+        console.log(err);
+        var outData = {name: params.name, data: err.toString().replace(/\r+/g,'').split("\n")};
+        conn.sendText(msgpack.encode(outData).toString('base64'));
+      }
     }
     else if(params.name == "dump") {
       var args = ["-i", params.eth, "-n", "-l"];
@@ -100,13 +113,26 @@ var server = ws.createServer(function (conn) {
         args.push("dst", params.dst);
       }
       conn.sendText(msgpack.encode({name: params.name, data: ["Exec tcpdump with args: " + args.toString()]}).toString('base64'));
-      dump = proc.spawn("tcpdump", args);
-      dump.stdout.on('data', function (lines) {
-        var outData = {name: params.name, data: lines.toString().replace(/\r+/g,'').split("\n")};
-        if(dump) {
+      try {
+        dump = proc.spawn("tcpdump", args);
+        dump.stdout.on('data', function (lines) {
+          var outData = {name: params.name, data: lines.toString().replace(/\r+/g,'').split("\n")};
           conn.sendText(msgpack.encode(outData).toString('base64'));
-        }
-      });
+        });
+        dump.stderr.on('data', function (lines) {
+          var outData = {name: params.name, data: lines.toString().replace(/\r+/g,'').split("\n")};
+          conn.sendText(msgpack.encode(outData).toString('base64'));
+        });
+        dump.on('error', function(err) {
+          console.log(err);
+          var outData = {name: params.name, data: err.toString().replace(/\r+/g,'').split("\n")};
+          conn.sendText(msgpack.encode(outData).toString('base64'));
+        });
+      } catch(err) {
+        console.log(err);
+        var outData = {name: params.name, data: err.toString().replace(/\r+/g,'').split("\n")};
+        conn.sendText(msgpack.encode(outData).toString('base64'));
+      }
     }
     else if(params.name == "closelog") {
       closeLogs();
@@ -114,7 +140,7 @@ var server = ws.createServer(function (conn) {
     else if(params.name == "closedump") {
       closeDump();
     }
-    });
+  });
   conn.on("close", function (code, reason) {
     closeLogs();
     closeDump();
