@@ -79,7 +79,7 @@ var server = ws.createServer(function (conn) {
     if(params.name == "syslog") {
       log = proc.spawn("tail", ["-f", "/var/log/syslog"]);
       log.stdout.on('data', function (lines) {
-        var outData = {name: params.name, data: lines.toString().split("\n")};
+        var outData = {name: params.name, data: lines.toString().replace(/\r+/g,'').split("\n")};
         if(log) {
           conn.sendText(msgpack.encode(outData).toString('base64'));
         }
@@ -102,7 +102,7 @@ var server = ws.createServer(function (conn) {
       conn.sendText(msgpack.encode({name: params.name, data: ["Exec tcpdump with args: " + args.toString()]}).toString('base64'));
       dump = proc.spawn("tcpdump", args);
       dump.stdout.on('data', function (lines) {
-        var outData = {name: params.name, data: lines.toString().split("\n")};
+        var outData = {name: params.name, data: lines.toString().replace(/\r+/g,'').split("\n")};
         if(dump) {
           conn.sendText(msgpack.encode(outData).toString('base64'));
         }

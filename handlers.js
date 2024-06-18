@@ -77,7 +77,7 @@ module.exports = {
         }
       }
       else {
-        var arr = stdout.split("\n");
+        var arr = stdout.replace(/\r+/g, '').split("\n");
 
         res.end(msgpack.encode(arr).toString('base64'));
       }
@@ -141,7 +141,7 @@ module.exports = {
         res.end(msgpack.encode(stderr).toString('base64'));
       }
       else {
-        var arr = stdout.split("\n");
+        var arr = stdout.replace(/\r+/g, '').split("\n");
 
         res.writeHead(200, {"Cache-Control": "no-cache"});
         res.end(msgpack.encode(arr).toString('base64'));
@@ -155,7 +155,7 @@ module.exports = {
     
     console.log("iptables -S");
     proc.exec("iptables -S", function(error, stdout, stderr) {
-      var arr = stdout.split("\n");
+      var arr = stdout.replace(/\r+/g, '').split("\n");
       
       var n = 0;
       for(var i = 0; i < arr.length; i++) {
@@ -167,7 +167,7 @@ module.exports = {
       
       console.log("iptables -t nat -S");
       proc.exec("iptables -t nat -S", function(error, stdout, stderr) {
-        var arr = stdout.split("\n");
+        var arr = stdout.replace(/\r+/g, '').split("\n");
 
         for(var i = 0; i < arr.length; i++) {
           var item = arr[i];
@@ -183,7 +183,7 @@ module.exports = {
             res.end(msgpack.encode(stderr).toString('base64'));
           }
           else {
-            var arr = stdout.split("\n");
+            var arr = stdout.replace(/\r+/g, '').split("\n");
 
             for(var i = 0; i < arr.length; i++) {
               var item = arr[i];
