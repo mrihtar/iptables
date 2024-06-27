@@ -6,7 +6,7 @@ var chainPath = [];
 $(document).ready(function() {
   rules.showListWithPath("INPUT", "filter");
   
-  console.log('get /chainlist');
+  //console.log('get /chainlist');
   $.get("/chainlist", function(data) {
     var raw_data = Uint8Array.from(atob(data), c => c.charCodeAt(0));
     var arr = msgpack.decode(raw_data);
@@ -179,7 +179,7 @@ var rules = {
     });
 
     parser.endEditRule();
-    console.log("get channel?c=" + channel + "&t=" + table);
+    //console.log("get channel?c=" + channel + "&t=" + table);
     $.get("channel?c=" + channel + "&t=" + table, parser.parseChannels);
   },
 
@@ -224,7 +224,7 @@ var rules = {
   },
   
   remove: function (index) {
-    console.log("get delete?i=" + index + "&c=" + channel + "&t=" + table);
+    //console.log("get delete?i=" + index + "&c=" + channel + "&t=" + table);
     $.get("delete?i=" + index + "&c=" + channel + "&t=" + table, parser.parseChannels);
     return false;
   },
@@ -254,14 +254,14 @@ var rules = {
     
     text = text.replace(/\/\/(.*)/g, '-m comment --comment "$1"');
         
-    console.log("post insert?c=" + channel + "&t=" + table);
-    conslog.log("rule=" + text);
+    //console.log("post insert?c=" + channel + "&t=" + table);
+    //console.log("rule=" + text);
     $.post("insert?c=" + channel + "&t=" + table, {rule: text}, function(data) {
       if(data) {
         var raw_data = Uint8Array.from(atob(data), c => c.charCodeAt(0));
         var arr = msgpack.decode(raw_data);
 
-        console.log(arr);
+        //console.log(arr);
         if(Array.isArray(arr)) {
           parser.parseChannels(data);
         }
@@ -275,7 +275,7 @@ var rules = {
   },
   
   monitor: function() {
-    console.log("get /mon?c=" + channel + "&t=" + table);
+    //console.log("get /mon?c=" + channel + "&t=" + table);
     $.get("/mon?c=" + channel + "&t=" + table, function(data) {
       var raw_data = Uint8Array.from(atob(data), c => c.charCodeAt(0));
       var arr = msgpack.decode(raw_data);
@@ -304,14 +304,14 @@ var rules = {
   addChainName: function(name, _table) {
     channel = name;
     table = _table;
-    console.log("post insert?c=" + name + "&t=" + table);
-    console.log("rule=" + "-t " + table + " -N " + name);
+    //console.log("post insert?c=" + name + "&t=" + table);
+    //console.log("rule=" + "-t " + table + " -N " + name);
     $.post("insert?c=" + name + "&t=" + table, {rule: "-t " + table + " -N " + name}, function(data) {
       if(data) {
         var raw_data = Uint8Array.from(atob(data), c => c.charCodeAt(0));
         var arr = msgpack.decode(raw_data);
 
-        console.log(arr);
+        //console.log(arr);
         if(Array.isArray(arr)) {
           parser.parseChannels(data);
           //$(".dropdown").append(window.tpl.customChain(name));
@@ -347,14 +347,14 @@ var rules = {
     var rName = $(obj).attr("chainname");
     var rTable = $(obj).attr("chaintable");
     
-    console.log("post insert?t=" + rTable + "&c=" + rName + '&d=true');
-    console.log("rule=" + "-t " + rTable + " -X " + rName);
+    //console.log("post insert?t=" + rTable + "&c=" + rName + '&d=true');
+    //console.log("rule=" + "-t " + rTable + " -X " + rName);
     $.post("insert?t=" + rTable + "&c=" + rName + '&d=true', {rule: "-t " + rTable + " -X " + rName}, function(data) {
       if(data) {
         var raw_data = Uint8Array.from(atob(data), c => c.charCodeAt(0));
         var arr = msgpack.decode(raw_data);
 
-        console.log(arr);
+        //console.log(arr);
         if(Array.isArray(arr)) { // empty array
           //parser.parseChannels(data);
           $(obj).parent().parent().remove();
@@ -368,14 +368,14 @@ var rules = {
   },
   
   resetCounters: function() {
-    console.log("post insert?t=" + table + "&c=" + channel);
-    console.log("rule=" + "-t " + table + " -Z " + channel);
+    //console.log("post insert?t=" + table + "&c=" + channel);
+    //console.log("rule=" + "-t " + table + " -Z " + channel);
     $.post("insert?t=" + table + "&c=" + channel, {rule: "-t " + table + " -Z " + channel}, function(data) {
       if(data) {
         var raw_data = Uint8Array.from(atob(data), c => c.charCodeAt(0));
         var arr = msgpack.decode(raw_data);
 
-        console.log(arr);
+        //console.log(arr);
         if(Array.isArray(arr)) {
           parser.parseChannels(data);
         }
@@ -393,7 +393,7 @@ var tools = {
   pageIndex: 1,
     
   save: function() {
-    console.log("get /save");
+    //console.log("get /save");
     $.get("/save", function(data) {
       if(data) {
         showError(data);
@@ -405,7 +405,7 @@ var tools = {
   },
     
   load: function() {
-    console.log("get /load");
+    //console.log("get /load");
     $.get("/load", function(data) {
       if(data) {
         showError(data);
@@ -462,8 +462,8 @@ var tools = {
             $(".port").each(function(index, obj) {
               window._settings.PORTS[$(obj).children()[0].firstChild.value] = $(obj).children()[1].firstChild.value;
             });
-            console.log("post /settings?c=save");
-            console.log("data=" + msgpack.encode(window._settings).toString('base64'));
+            //console.log("post /settings?c=save");
+            //console.log("data=" + msgpack.encode(window._settings).toString('base64'));
             $.post("/settings?c=save", {data: msgpack.encode(window._settings).toString('base64')}, function(data) {
               if(data) {
                 showError(data);

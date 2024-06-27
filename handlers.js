@@ -64,7 +64,7 @@ module.exports = {
       return;
     }
     var run = "iptables -t " + args.t + " -S " + args.c;
-    console.log(run);
+    //console.log(run);
     proc.exec(run, function(error, stdout, stderr) {
       if(stderr) {
         console.log(stderr);
@@ -89,7 +89,7 @@ module.exports = {
     var args = querystring.parse(query);
     
     var rule = "-t " + args.t + " -D " + args.c + " " + args.i;
-    console.log("iptables " + rule);
+    //console.log("iptables " + rule);
     proc.exec("iptables " + rule, function(error, stdout, stderr) {
       if(stderr) {
         console.log(stderr);
@@ -114,7 +114,7 @@ module.exports = {
       var post = querystring.parse(body);
         
       var rule = post['rule'];
-      console.log("iptables " + rule);
+      //console.log("iptables " + rule);
       proc.exec("iptables " + rule, function(error, stdout, stderr) {
         if(stderr) {
           console.log(stderr);
@@ -134,7 +134,7 @@ module.exports = {
     var args = querystring.parse(query);
 
     var run = "iptables -t " + args.t + " -L " + args.c + " -vn";
-    console.log(run);
+    //console.log(run);
     proc.exec(run, function(error, stdout, stderr) {
       if(stderr) {
         console.log(stderr);
@@ -153,7 +153,7 @@ module.exports = {
     var new_arr = [];
     var n = 0;
     
-    console.log("iptables -S");
+    //console.log("iptables -S");
     proc.exec("iptables -S", function(error, stdout, stderr) {
       var arr = stdout.replace(/\r+/g, '').split("\n");
       
@@ -165,7 +165,7 @@ module.exports = {
         }
       }
       
-      console.log("iptables -t nat -S");
+      //console.log("iptables -t nat -S");
       proc.exec("iptables -t nat -S", function(error, stdout, stderr) {
         var arr = stdout.replace(/\r+/g, '').split("\n");
 
@@ -176,7 +176,7 @@ module.exports = {
           }
         }
 
-        console.log("iptables -t mangle -S");
+        //console.log("iptables -t mangle -S");
         proc.exec("iptables -t mangle -S", function(error, stdout, stderr) {
           if(stderr) {
             console.log(stderr);
@@ -200,7 +200,7 @@ module.exports = {
   },
     
     save: function(req, res) {
-      console.log("iptables-save > " + module.exports._settings.savePath);
+      //console.log("iptables-save > " + module.exports._settings.savePath);
       proc.exec("iptables-save > " + module.exports._settings.savePath, function(error, stdout, stderr) {
         if(stderr) {
           console.log(stderr);
@@ -213,7 +213,7 @@ module.exports = {
     },
     
     load: function(req, res) {
-      console.log("iptables-restore < " + module.exports._settings.savePath);
+      //console.log("iptables-restore < " + module.exports._settings.savePath);
       proc.exec("iptables-restore < " + module.exports._settings.savePath, function(error, stdout, stderr) {
         if(stderr) {
           console.log(stderr);
